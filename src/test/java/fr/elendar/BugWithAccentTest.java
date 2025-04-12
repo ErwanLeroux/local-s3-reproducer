@@ -71,4 +71,18 @@ class BugWithAccentTest {
 
         assertThat(listObjectsV2Response).isNotNull();
     }
+
+    @Test
+    void worksWithoutAccentTest() {
+        String filename = "Tar_with_empty_gz.tar";
+        String prefix = "folderWithAccent/";
+        String key = prefix + filename;
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(BUCKET_NAME).key(key).build();
+        s3Client.putObject(putObjectRequest, RequestBody.fromFile(Path.of("src/test/resources", filename)));
+
+        // Throws an exception
+        ListObjectsV2Response listObjectsV2Response = s3Client.listObjectsV2(ListObjectsV2Request.builder().bucket(BUCKET_NAME).prefix(prefix).encodingType(EncodingType.URL).build());
+
+        assertThat(listObjectsV2Response).isNotNull();
+    }
 }
